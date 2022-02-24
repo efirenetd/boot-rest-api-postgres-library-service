@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  library-service:
+    image: 'efirenet/library-service'
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      #context: library-service
+      dockerfile: Dockerfile
+    networks:
+      - library-sample-net
+    depends_on:
+      - db
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url" : "jdbc:postgresql://db:5432/lib_postgres",
+        "spring.datasource.username" : "libpostgres",
+        "spring.datasource.password" : "libpostgres",
+        "spring.datasource.hikari.schema": "libdb",
+        "spring.jpa.hibernate.ddl-auto" : "create-drop",
+        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+        "springdoc.swagger-ui.path" : "/swagger-ui-custom.html",
+        "logging.level.org.hibernate.SQL" : "DEBUG",
+        "logging.level.org.hibernate.type.descriptor.sql.BasicBinder" : "TRACE"
+      }'
+
+  # Reference: https://graspingtech.com/docker-compose-postgresql/
+  db:
+    image: 'postgres:13.1-alpine'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    container_name: db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - APP_DB_USER=libpostgres
+      - APP_DB_PASS=libpostgres
+      - APP_DB_NAME=lib_postgres
+      - APP_DB_SCHEMA=libdb
+    networks:
+      - library-sample-net
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+networks:
+  library-sample-net:
+    driver: bridge
