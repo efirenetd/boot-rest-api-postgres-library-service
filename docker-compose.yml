@@ -60,14 +60,14 @@ services:
       - APP_DB_USER=keycloak
       - APP_DB_PASS=password
       - APP_DB_NAME=keycloak
-      - APP_DB_SCHEMA=public
+      - APP_DB_SCHEMA=kc
     networks:
       - library-sample-net
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5433"
+      - "5433:5432"
 
   keycloak:
       image: quay.io/keycloak/keycloak:legacy
@@ -81,10 +81,13 @@ services:
         DB_SCHEMA: public
         KEYCLOAK_USER: admin
         KEYCLOAK_PASSWORD: admin
-      # Not able to pre-configure via import (need to manually import the json file)
-      #  KEYCLOAK_IMPORT: ./keycloak/library-realm-export.json
-      # volumes:
-      #  - ./keycloak/library-realm-export.json:/tmp/realm-export.json
+        KEYCLOAK_IMPORT: /tmp/realm-export.json
+      volumes:
+        - ./keycloak/library-realm-export.json:/tmp/realm-export.json
+      # Below is to resolve issue KC-SERVICES0005: Unable to import realm <Realm>> from file <path of realm-export.json>.: java.lang.RuntimeException: Script upload is disabled
+      # (This is DEPRECATED and just using it for development purposes)
+      command:
+        - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled"
       ports:
         - "8080:8080"
       networks:

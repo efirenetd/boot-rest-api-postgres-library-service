@@ -14,11 +14,13 @@
 
 ```docker-compose down```
 
+### Clean up local Volume
+
+``docker volume prune``
+
 ### To test, you can use PostMan or Swagger-UI
 
 ``http://localhost:8080/swagger-ui-custom.html``
-
-
 
 
 
