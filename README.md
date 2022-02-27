@@ -25,5 +25,8 @@
 ###References:
 * https://javatodev.com/spring-boot-mysql/?utm_source=pocket_mylist
 * https://www.baeldung.com/spring-rest-openapi-documentation
+* https://springdoc.org/
 * https://www.dariawan.com/tutorials/spring/documenting-spring-boot-rest-api-springdoc-openapi-3/
 * https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
+
+

@@ -7,9 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.efire.net.domain.Book;
 import org.efire.net.domain.Member;
-import org.efire.net.dto.*;
+import org.efire.net.dto.BookDto;
+import org.efire.net.dto.LendDto;
+import org.efire.net.dto.LibraryResponse;
+import org.efire.net.dto.MemberDto;
 import org.efire.net.exception.BookNotFoundException;
 import org.efire.net.exception.MemberStatusException;
 import org.efire.net.service.BookService;
@@ -17,6 +21,8 @@ import org.efire.net.service.LendService;
 import org.efire.net.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +30,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/libraries")
 @RequiredArgsConstructor
+@Slf4j
 public class LibraryController {
 
     private final BookService bookService;
@@ -39,11 +47,15 @@ public class LibraryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book found."),
             @ApiResponse(responseCode = "204", description = "No Content."),
+            @ApiResponse(responseCode = "401", description = "Unauthorized."),
+            @ApiResponse(responseCode = "403", description = "Forbidden."),
             @ApiResponse(responseCode = "500", description = "Error retrieving all books")
     })
     @GetMapping("/book")
     public ResponseEntity<List<Book>> getAllBooks( @Parameter(description = "Book ISBN") @RequestParam(value = "isbn", required = false) String isbn,
                                                    HttpServletResponse response) {
+        log.info("Retrieving all books...");
+        log.info("User: {} Roles: {} ", getUser(), getRoles());
         List<Book> books;
         if (StringUtils.hasText(isbn)) {
             try {
@@ -53,6 +65,7 @@ public class LibraryController {
                 throw new ResponseStatusException(HttpStatus.NO_CONTENT, ex.getMessage(), ex);
             }
         }
+
         return ResponseEntity.ok(bookService.retrieveAllBook());
 
     }
@@ -82,6 +95,8 @@ public class LibraryController {
     })
     @PostMapping("/book")
     public ResponseEntity<LibraryResponse> addBook(@RequestBody BookDto bookDto) {
+        log.info("Registering a book...");
+        log.info("User: {} Roles: {} ", getUser(), getRoles());
         var book = bookService.createBook(bookDto);
 
         var response = LibraryResponse.builder()
@@ -137,5 +152,15 @@ public class LibraryController {
     @PutMapping("/member/{id}")
     public Member updateMember(@PathVariable("id") Long id, @RequestBody MemberDto memberDto) {
         return memberService.updateMember(id, memberDto);
+    }
+
+    private String getRoles() {
+        Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>)
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        return StringUtils.collectionToCommaDelimitedString(authorities);
+    }
+    private String getUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
