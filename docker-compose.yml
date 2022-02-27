@@ -4,7 +4,7 @@ services:
   library-service:
     image: 'efirenet/library-service'
     ports:
-      - "8080:8080"
+      - "8081:8081"
     build:
       context: .
       #context: library-service
@@ -13,6 +13,7 @@ services:
       - library-sample-net
     depends_on:
       - db
+      - keycloak
     environment:
       SPRING_APPLICATION_JSON: '{
         "spring.datasource.url" : "jdbc:postgresql://db:5432/lib_postgres",
@@ -49,6 +50,52 @@ services:
       - ./db:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
+
+  keycloakdb:
+    image: 'postgres:13.1-alpine'
+    container_name: keycloakdb
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - APP_DB_USER=keycloak
+      - APP_DB_PASS=password
+      - APP_DB_NAME=keycloak
+      - APP_DB_SCHEMA=public
+    networks:
+      - library-sample-net
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+
+  keycloak:
+      image: quay.io/keycloak/keycloak:legacy
+      container_name: keycloak
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: keycloakdb
+        DB_DATABASE: keycloak
+        DB_USER: keycloak
+        DB_PASSWORD: password
+        DB_SCHEMA: public
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: admin
+      # Not able to pre-configure via import (need to manually import the json file)
+      #  KEYCLOAK_IMPORT: ./keycloak/library-realm-export.json
+      # volumes:
+      #  - ./keycloak/library-realm-export.json:/tmp/realm-export.json
+      ports:
+        - "8080:8080"
+      networks:
+        - library-sample-net
+      depends_on:
+        - keycloakdb
+
+volumes:
+  postgres_data:
+    driver: local
+
 networks:
   library-sample-net:
     driver: bridge
