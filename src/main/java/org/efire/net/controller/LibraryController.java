@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.util.Collection;
@@ -128,7 +129,7 @@ public class LibraryController {
             var successResponse = LibraryResponse.builder().message("Book/s successfully lend to a member")
                     .timestamp(Instant.now()).status("Success").data(borrowedBooks).build();
             return ResponseEntity.ok(successResponse);
-        } catch (MemberStatusException ex) {
+        } catch (MemberStatusException | EntityNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }

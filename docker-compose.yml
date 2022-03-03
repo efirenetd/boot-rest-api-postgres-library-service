@@ -7,7 +7,6 @@ services:
       - "8081:8081"
     build:
       context: .
-      #context: library-service
       dockerfile: Dockerfile
     networks:
       - library-sample-net
@@ -22,9 +21,15 @@ services:
         "spring.datasource.hikari.schema": "libdb",
         "spring.jpa.hibernate.ddl-auto" : "create-drop",
         "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
-        "springdoc.swagger-ui.path" : "/swagger-ui-custom.html",
         "logging.level.org.hibernate.SQL" : "DEBUG",
-        "logging.level.org.hibernate.type.descriptor.sql.BasicBinder" : "TRACE"
+        "logging.level.org.hibernate.type.descriptor.sql.BasicBinder" : "TRACE",
+        "keycloak.realm" : "Library",
+        "keycloak.auth-server-url" : "http://keycloak:8080/auth",
+        "keycloak.ssl-required" : "external",
+        "keycloak.resource" : "library-service",
+        "keycloak.credentials.secret" : "rVU1owUjWXEg0TminvqCruz2mmejh1Qk",
+        "keycloak.use-resource-role-mappings" : "true",
+        "keycloak.bearer-only" : "true"
       }'
 
   # Reference: https://graspingtech.com/docker-compose-postgresql/
