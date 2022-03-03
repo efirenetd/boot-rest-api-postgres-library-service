@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Data
 @Entity
 @Table(name = "t_lend", schema = "libdb")
-public class Lend {
+public class Lend implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
