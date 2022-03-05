@@ -45,7 +45,7 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/libraries/book").hasAnyRole("USER", "USER_READ", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/v1/libraries/book").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/v1/libraries/book/lend").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/api/v1/libraries/book/lend").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

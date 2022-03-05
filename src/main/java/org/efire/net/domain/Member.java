@@ -2,15 +2,19 @@ package org.efire.net.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Audited
+@EntityListeners(AuditingEntityListener.class)  // To populate @CreatedDateTime and @LastModifiedDate
 @Entity
 @Table(name = "t_member", schema = "libdb")
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

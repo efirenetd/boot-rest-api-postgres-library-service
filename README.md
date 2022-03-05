@@ -4,7 +4,8 @@
 - [x] JPA/Hibernate 
 - [x] OpenAPI 3.0 
 - [x] Redis
-- [x] Docker
+- [x] Spring Data Envers (AuditTrail)
+- [x] Docker Compose
 - [ ] TODO: Unit / Integration tests
 
 ### Run the service using Docker
@@ -44,10 +45,11 @@
 ``docker run --name library-redis -p 6379:6379 -e ALLOW_EMPTY_PASSWORD=yes -e REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL -d redis``
 
 ###References:
-* https://javatodev.com/spring-boot-mysql/?utm_source=pocket_mylist
-* https://www.baeldung.com/spring-rest-openapi-documentation
-* https://springdoc.org/
-* https://www.dariawan.com/tutorials/spring/documenting-spring-boot-rest-api-springdoc-openapi-3/
-* https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
+* [Spring Boot REST API Using JPA, Hibernate, MySQL Tutorial](https://javatodev.com/spring-boot-mysql)
+* [Documenting a Spring REST API Using OpenAPI 3.0](https://www.baeldung.com/spring-rest-openapi-documentation)
+* [springdoc-openapi](https://springdoc.org)
+* [Documenting Spring Boot REST API with SpringDoc + OpenAPI 3](https://www.dariawan.com/tutorials/spring/documenting-spring-boot-rest-api-springdoc-openapi-3)
+* [Jackon - Bidirectional](https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion)
+* [Spring Data Envers](https://docs.spring.io/spring-data/envers/docs/current/reference/html/#reference)
 
 

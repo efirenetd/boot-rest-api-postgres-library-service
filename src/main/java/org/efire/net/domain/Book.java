@@ -3,6 +3,8 @@ package org.efire.net.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,9 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Audited
+@EntityListeners(AuditingEntityListener.class)  // To populate @CreatedDateTime and @LastModifiedDate
 @Entity
 @Table(name = "t_book", schema = "libdb")
-public class Book implements Serializable  {
+public class Book extends BaseEntity implements Serializable  {
 
     private static final long serialVersionUID = 1L;
 

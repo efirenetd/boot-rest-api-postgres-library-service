@@ -2,6 +2,8 @@ package org.efire.net.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,8 +11,10 @@ import java.time.Instant;
 
 @Data
 @Entity
+@Audited
+@EntityListeners(AuditingEntityListener.class)  // To populate @CreatedDateTime and @LastModifiedDate
 @Table(name = "t_lend", schema = "libdb")
-public class Lend implements Serializable {
+public class Lend extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
