@@ -69,6 +69,69 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Lend Book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"bookId\" : 2,\n        \"memberId\" : 3\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/libraries/book/lend",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"libraries",
+						"book",
+						"lend"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register a Member",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Deriq\",\n  \"lastName\": \"Tenerife\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/v1/libraries/member",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"v1",
+						"libraries",
+						"member"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -172,11 +235,11 @@
 		},
 		{
 			"key": "username",
-			"value": "admin1"
+			"value": "user2"
 		},
 		{
 			"key": "password",
-			"value": "admin123"
+			"value": "user2"
 		}
 	]
 }

@@ -10,6 +10,18 @@
 
 ```docker-compose up --build```
 
+### Once keycloak is started, go to [Keycloak Admin Console](http://localhost:8080/auth/admin/master/console)
+
+* Create the following Users and map to a specific Role
+  * admin1 (ADMIN)
+  * user1 (USER)
+  * user2 (USER_READ)
+
+
+### To test, you can use PostMan or Swagger-UI
+
+``http://localhost:8081/swagger-ui.html``
+
 ### Stop the service
 
 ```docker-compose down```
@@ -17,11 +29,6 @@
 ### Clean up local Volume
 
 ``docker volume prune``
-
-### To test, you can use PostMan or Swagger-UI
-
-``http://localhost:8081/swagger-ui.html``
-
 
 
 ###References:
