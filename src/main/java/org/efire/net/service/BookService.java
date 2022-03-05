@@ -7,10 +7,12 @@ import org.efire.net.exception.BookNotFoundException;
 import org.efire.net.mapper.LibraryMapper;
 import org.efire.net.repository.AuthorRepository;
 import org.efire.net.repository.BookRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,20 +23,19 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final LibraryMapper libraryMapper;
 
-
+    @Cacheable(value = "bookCache")
     public Book retrieveBook(Long id) {
-        var book = bookRepository.findById(id).orElseThrow(() ->
+        return bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't find any book under given ID"));
-        return book;
     }
 
+    @Cacheable(value = "bookCache")
     public List<Book> retrieveBookByISBN(String isbn) {
-        var book = bookRepository.findByIsbn(isbn).orElseThrow(() -> new BookNotFoundException("No book under ISBN: "+ isbn));
-        var books = new ArrayList<Book>();
-        books.add(book);
-        return books;
+        return bookRepository.findByIsbn(isbn)
+                .map(Arrays::asList).orElseThrow(() -> new BookNotFoundException("No book under ISBN: "+ isbn));
     }
 
+    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     public Book createBook(BookDto bookDto) {
         var author = authorRepository.findById(bookDto.getAuthorId())
                 .orElseThrow(() -> new EntityNotFoundException("Author not found"));
